@@ -83,3 +83,8 @@ async def generate(request: GenerateRequest):
     response_text = await call_openrouter_api(messages, api_key, model_name)
     
     return {"response": response_text}
+
+@app.get("/heartbeat")
+async def heartbeat():
+    """Health check endpoint to verify the API is running"""
+    return {"status": "healthy", "message": "API is running"}

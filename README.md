@@ -11,7 +11,19 @@ A FastAPI application that integrates with OpenRouter's LLM API to provide text 
 - **Docker Support**: Containerized for easy deployment
 - **Test Coverage**: Comprehensive test suite with real API integration
 
-## API Endpoint
+## API Endpoints
+
+### GET /heartbeat
+
+Health check endpoint to verify the API is running.
+
+**Response:**
+```json
+{
+  "status": "healthy",
+  "message": "API is running"
+}
+```
 
 ### POST /generate
 
@@ -162,6 +174,21 @@ curl -X POST "http://localhost:8000/generate" \
   -d '{
     "text": "Hello, tell me about artificial intelligence"
   }'
+```
+
+### Heartbeat Check
+
+```bash
+# Check API health
+curl -X GET "http://localhost:8000/heartbeat"
+```
+
+```python
+import requests
+
+# Check API health
+response = requests.get("http://localhost:8000/heartbeat")
+print(response.json())
 ```
 
 ### With Custom API Key and Model

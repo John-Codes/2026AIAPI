@@ -33,6 +33,15 @@ def test_optional_image_url():
     assert response.status_code == 200
     assert "response" in response.json()
 
+def test_heartbeat_endpoint():
+    """Test heartbeat endpoint returns healthy status"""
+    response = client.get("/heartbeat")
+    assert response.status_code == 200
+    assert "status" in response.json()
+    assert response.json()["status"] == "healthy"
+    assert "message" in response.json()
+    assert response.json()["message"] == "API is running"
+
 def test_api_key_and_model_name_updates():
     """TDD Cycle 4: Test api_key and model_name updates should pass"""
     response = client.post("/generate", json={
