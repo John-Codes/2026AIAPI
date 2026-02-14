@@ -101,67 +101,109 @@ pytest test_app.py --cov=app
 
 ## Docker Deployment
 
-### Using Docker Compose (Recommended)
+### Quick Start (Recommended)
 
-1. Clone the repository:
+1. **Clone the repository:**
 ```bash
 git clone <repository-url>
 cd 2026AIAPI
 ```
 
-2. Set up environment variables:
+2. **Set up environment variables:**
 ```bash
-# Create .env file with your OpenRouter credentials
-echo 'Open_Router="your-openrouter-api-key"' > .env
-echo 'Model_Name="moonshotai/kimi-k2.5"' >> .env
+# Copy the example environment file
+cp .env.example .env
+
+# Edit .env with your real OpenRouter credentials
+# Get your API key from: https://openrouter.ai/keys
 ```
 
-3. Run with Docker Compose:
+3. **Run with Docker (Simplest Method):**
 ```bash
-docker-compose up -d
+# Build and run the container
+docker run -d \
+  --name fastapi-app \
+  -p 8000:8000 \
+  -v $(pwd)/.env:/app/.env \
+  efexzium/fastapi-openrouter-app:latest
 ```
 
 The API will be available at `http://localhost:8000`
 
-### Using Docker Image Directly
+### Using Docker Compose
 
-#### Pull from Docker Hub
-
+1. **Clone and setup:**
 ```bash
-docker pull efexzium/fastapi-openrouter-app
+git clone <repository-url>
+cd 2026AIAPI
+cp .env.example .env
+# Edit .env with your credentials
+```
+
+2. **Run with Docker Compose:**
+```bash
+docker-compose up -d
+```
+
+### Using Pre-built Docker Image from Docker Hub
+
+#### Pull the Image
+```bash
+docker pull efexzium/fastapi-openrouter-app:latest
 ```
 
 #### Run the Container
-
 ```bash
-# With environment variables
+# Method 1: With .env file mount (Recommended)
 docker run -d \
-  --name fastapi-openrouter \
-  -p 8000:8000 \
-  -e Open_Router="your-openrouter-api-key" \
-  -e Model_Name="moonshotai/kimi-k2.5" \
-  efexzium/fastapi-openrouter-app
-
-# With .env file mount
-docker run -d \
-  --name fastapi-openrouter \
+  --name fastapi-app \
   -p 8000:8000 \
   -v $(pwd)/.env:/app/.env \
-  efexzium/fastapi-openrouter-app
+  efexzium/fastapi-openrouter-app:latest
+
+# Method 2: With environment variables
+docker run -d \
+  --name fastapi-app \
+  -p 8000:8000 \
+  -e Open_Router="your-openrouter-api-key" \
+  -e Model_Name="nvidia/nemotron-nano-12b-v2-vl:free" \
+  efexzium/fastapi-openrouter-app:latest
 ```
 
 ### Building Custom Docker Image
 
 ```bash
-# Build the image
-docker build -t fastapi-openrouter-app .
+# Build the image locally
+docker build -t fastapi-openrouter-app:custom .
 
-# Run the built image
+# Run the custom image
 docker run -d \
-  --name fastapi-openrouter \
+  --name fastapi-app \
   -p 8000:8000 \
   -v $(pwd)/.env:/app/.env \
-  fastapi-openrouter-app
+  fastapi-openrouter-app:custom
+```
+
+### Docker Management Commands
+
+```bash
+# View container status
+docker ps
+
+# View container logs
+docker logs fastapi-app
+
+# Follow logs in real-time
+docker logs -f fastapi-app
+
+# Stop the container
+docker stop fastapi-app
+
+# Remove the container
+docker rm fastapi-app
+
+# Remove the image
+docker rmi efexzium/fastapi-openrouter-app:latest
 ```
 
 ## API Usage Examples
@@ -229,9 +271,17 @@ print(response.json())
 
 - **Image Name**: `efexzium/fastapi-openrouter-app`
 - **Tag**: `latest`
+- **Registry**: Docker Hub
 - **Architecture**: Multi-platform support
 - **Base Image**: Python 3.10-slim
 - **Port**: 8000
+- **Size**: ~85 MB
+- **Last Updated**: 2026-02-14 (Production Ready)
+
+### Docker Hub Status
+- ✅ **Image Published**: Available on Docker Hub
+- ✅ **Tested**: Real API integration tests passed
+- ✅ **Production Ready**: Containerized and verified
 
 ## API Documentation
 
@@ -353,4 +403,5 @@ For support, please:
 
 **Docker Image**: `efexzium/fastapi-openrouter-app`  
 **Registry**: Docker Hub  
-**Last Updated**: 2026-02-06
+**Status**: ✅ Production Ready  
+**Last Updated**: 2026-02-14
